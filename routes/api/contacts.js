@@ -3,9 +3,10 @@ const router = express.Router()
 
 const contacts = require('../../model/contacts.json')
 const shortid = require('shortid')
+const contactSchema = require('./validate')
 
 router.get('/', async (req, res, next) => {
-  console.log(req.query)
+  // console.log(req.query)
   res.json({
     status: 'success',
     code: 200,
@@ -19,7 +20,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:contactId', async (req, res, next) => {
   // console.log(req.params)
   const { contactId } = req.params
-  const selectContact = contacts.find(contact => {
+  const selectContact = await contacts.find(contact => {
     // console.log(contact, contactId)
     return contact.id === parseInt(contactId)
   })
@@ -27,7 +28,7 @@ router.get('/:contactId', async (req, res, next) => {
     res.status(404).json({
       status: 'error',
       code: 404,
-      message: 'Contact with this id not found'
+      message: 'Not found'
     })
     return
   }
@@ -42,8 +43,17 @@ router.get('/:contactId', async (req, res, next) => {
 })
 
 router.post('/', express.json(), async (req, res, next) => {
-  console.log(req.body)
-  const newContact = { ...req.body, id: shortid.generate() }
+  // console.log(req.body)
+  const { error } = contactSchema.validate(req.body)
+  if (error) {
+    res.status(404).json({
+      status: error,
+      code: 400,
+      message: 'missing required name field'
+    })
+    return
+  }
+  const newContact = await { ...req.body, id: shortid.generate() }
   contacts.push(newContact)
   res.status(201).json({
     status: 'success',
@@ -56,11 +66,54 @@ router.post('/', express.json(), async (req, res, next) => {
 })
 
 router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+  const { contactId } = req.params
+  const index = contacts.findIndex(contact => contact.id === parseInt(contactId))
+  if (index === -1) {
+    res.status(404).json({
+      status: 'error',
+      code: 404,
+      message: 'Not found'
+    })
+    return
+  }
+  await contacts.splice(index, 1)
+  res.status(200).json({
+    status: 'success',
+    code: 200,
+    message: 'contact deleted',
+  })
+  // res.json({ message: 'template message' })
 })
 
-router.patch('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+router.put('/:contactId', express.json(), async (req, res, next) => {
+  const { error } = contactSchema.validate(req.body)
+  if (error) {
+    res.status(404).json({
+      status: error,
+      code: 400,
+      message: 'missing fields'
+    })
+    return
+  }
+  const { contactId } = req.params
+  const index = contacts.findIndex(contact => contact.id === parseInt(contactId))
+  if (index === -1) {
+    res.status(404).json({
+      status: 'error',
+      code: 404,
+      message: 'Not found'
+    })
+    return
+  }
+  contacts[index] = await { ...req.body, id: contactId }
+  res.json({
+    status: 'success',
+    code: 200,
+    data: {
+      result: contacts[index]
+    },
+  })
+  // res.json({ message: 'template message' })
 })
 
 module.exports = router
