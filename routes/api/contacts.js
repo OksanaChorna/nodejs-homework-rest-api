@@ -1,8 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const contacts = require('../../model/contacts.json')
-const shortid = require('shortid')
+// const contacts = require('../../model/contacts.json')
 const contactSchema = require('./validate')
 const ctrl = require('../../model/index')
 
@@ -27,7 +26,7 @@ router.get('/:contactId', async (req, res, next) => {
     })
     return
   }
-  res.json({
+  return res.json({
     status: 'success',
     code: 200,
     data: {
@@ -37,7 +36,6 @@ router.get('/:contactId', async (req, res, next) => {
 })
 
 router.post('/', express.json(), async (req, res, next) => {
-  // console.log(req.body)
   const { error } = contactSchema.validate(req.body)
   if (error) {
     res.status(404).json({
@@ -47,67 +45,61 @@ router.post('/', express.json(), async (req, res, next) => {
     })
     return
   }
-  const newContact = await { ...req.body, id: shortid.generate() }
-  contacts.push(newContact)
-  res.status(201).json({
+  const newContact = await ctrl.addContact(req.body)
+  return res.status(201).json({
     status: 'success',
     code: 201,
     data: {
       result: newContact
     }
   })
-  // res.json({ message: 'template message' })
 })
 
 router.delete('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params
-  const index = contacts.findIndex(contact => contact.id === parseInt(contactId))
-  if (index === -1) {
-    res.status(404).json({
+  // const { contactId } = req.params
+  const delContact = await ctrl.removeContact(req.params.contactId)
+  if (delContact === -1) {
+    return res.status(404).json({
       status: 'error',
       code: 404,
       message: 'Not found'
     })
-    return
   }
-  await contacts.splice(index, 1)
-  res.status(200).json({
+  return res.status(200).json({
     status: 'success',
     code: 200,
     message: 'contact deleted',
   })
-  // res.json({ message: 'template message' })
 })
 
-router.put('/:contactId', express.json(), async (req, res, next) => {
-  const { error } = contactSchema.validate(req.body)
-  if (error) {
-    res.status(404).json({
-      status: error,
-      code: 400,
-      message: 'missing fields'
-    })
-    return
-  }
-  const { contactId } = req.params
-  const index = contacts.findIndex(contact => contact.id === parseInt(contactId))
-  if (index === -1) {
-    res.status(404).json({
-      status: 'error',
-      code: 404,
-      message: 'Not found'
-    })
-    return
-  }
-  contacts[index] = await { ...req.body, id: contactId }
-  res.json({
-    status: 'success',
-    code: 200,
-    data: {
-      result: contacts[index]
-    },
-  })
-  // res.json({ message: 'template message' })
-})
+// router.put('/:contactId', express.json(), async (req, res, next) => {
+//   const { error } = contactSchema.validate(req.body)
+//   if (error) {
+//     res.status(404).json({
+//       status: error,
+//       code: 400,
+//       message: 'missing fields'
+//     })
+//     return
+//   }
+//   const { contactId } = req.params
+//   const index = contacts.findIndex(contact => contact.id === parseInt(contactId))
+//   if (index === -1) {
+//     res.status(404).json({
+//       status: 'error',
+//       code: 404,
+//       message: 'Not found'
+//     })
+//     return
+//   }
+//   contacts[index] = await { ...req.body, id: contactId }
+//   res.json({
+//     status: 'success',
+//     code: 200,
+//     data: {
+//       result: contacts[index]
+//     },
+//   })
+// })
 
 module.exports = router
