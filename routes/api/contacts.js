@@ -4,26 +4,21 @@ const router = express.Router()
 const contacts = require('../../model/contacts.json')
 const shortid = require('shortid')
 const contactSchema = require('./validate')
+const ctrl = require('../../model/index')
 
 router.get('/', async (req, res, next) => {
-  // console.log(req.query)
-  res.json({
+  const contacts = await ctrl.listContacts()
+  return res.json({
     status: 'success',
     code: 200,
     data: {
       result: contacts
     },
   })
-  // res.json({ message: 'Not found' })
 })
 
 router.get('/:contactId', async (req, res, next) => {
-  // console.log(req.params)
-  const { contactId } = req.params
-  const selectContact = await contacts.find(contact => {
-    // console.log(contact, contactId)
-    return contact.id === parseInt(contactId)
-  })
+  const selectContact = await ctrl.getContactById(req.params.contactId)
   if (!selectContact) {
     res.status(404).json({
       status: 'error',
@@ -39,7 +34,6 @@ router.get('/:contactId', async (req, res, next) => {
       result: selectContact
     },
   })
-  // res.json({ message: 'template message' })
 })
 
 router.post('/', express.json(), async (req, res, next) => {
