@@ -13,7 +13,8 @@ const updateContact = async (req, res) => {
     return
   }
   const { contactId } = req.params
-  const index = contacts.findIndex(item => item.id === contactId)
+  const index = contacts.findIndex(contact => String(contact.id) === String(contactId))
+  console.log(index)
   if (index === -1) {
     res.status(404).json({
       status: 'error',
