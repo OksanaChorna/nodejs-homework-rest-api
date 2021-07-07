@@ -6,4 +6,10 @@ const contactSchema = Joi.object({
   phone: Joi.string().pattern(/^[0-9]+$/).required()
 })
 
-module.exports = contactSchema
+const schemaUpdate = Joi.object({
+  name: Joi.string(),
+  email: Joi.string(),
+  phone: Joi.string()
+}).min(1)
+
+module.exports = { contactSchema, schemaUpdate }

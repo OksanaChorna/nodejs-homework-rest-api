@@ -20,10 +20,6 @@ const removeContact = async (contactId) => {
   const index = contacts.findIndex(contact => String(contact.id) === String(contactId))
   if (index !== -1) {
     const filteredContacts = contacts.splice(index, 1)
-    // const filteredContacts = contacts.filter((contact) => {
-    //   return String(contact.id) !== String(contactId)
-    // })
-    // console.log(filteredContacts)
     const str = JSON.stringify(contacts)
     await fs.writeFile(contactsPath, str)
     return filteredContacts
@@ -41,12 +37,22 @@ const addContact = async (body) => {
   return newContact
 }
 
-const updateContact = async (contactId, body) => {}
+// const updateContact = async (contactId, body) => {
+//   const contacts = await listContacts()
+//   const index = contacts.findIndex(contact => String(contact.id) === String(contactId))
+//   if (index === -1) return
+//   contacts[index] = { ...contacts[index], body }
+
+//   const str = JSON.stringify(contacts)
+//   console.log(object)
+//   await fs.writeFile(contactsPath, str)
+//   return contacts[index]
+// }
 
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
-  updateContact,
+  // updateContact,
 }

@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
-// const contacts = require('../../model/contacts.json')
-const contactSchema = require('./validate')
+const { contactSchema } = require('./validate')
 const ctrl = require('../../model/index')
+const updateContact = require('../../controls/update')
 
 router.get('/', async (req, res, next) => {
   const contacts = await ctrl.listContacts()
@@ -56,7 +56,6 @@ router.post('/', express.json(), async (req, res, next) => {
 })
 
 router.delete('/:contactId', async (req, res, next) => {
-  // const { contactId } = req.params
   const delContact = await ctrl.removeContact(req.params.contactId)
   if (delContact === -1) {
     return res.status(404).json({
@@ -73,7 +72,7 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 // router.put('/:contactId', express.json(), async (req, res, next) => {
-//   const { error } = contactSchema.validate(req.body)
+//   const { error } = schemaUpdate.validate(req.body)
 //   if (error) {
 //     res.status(404).json({
 //       status: error,
@@ -82,24 +81,22 @@ router.delete('/:contactId', async (req, res, next) => {
 //     })
 //     return
 //   }
-//   const { contactId } = req.params
-//   const index = contacts.findIndex(contact => contact.id === parseInt(contactId))
-//   if (index === -1) {
-//     res.status(404).json({
-//       status: 'error',
-//       code: 404,
-//       message: 'Not found'
+
+//   const index = await ctrl.updateContact(req.params.contactId, req.params.body)
+//   if (index) {
+//     return res.status(200).json({
+//       status: 'success',
+//       code: 200,
+//       data: { index },
 //     })
-//     return
 //   }
-//   contacts[index] = await { ...req.body, id: contactId }
-//   res.json({
-//     status: 'success',
-//     code: 200,
-//     data: {
-//       result: contacts[index]
-//     },
+//   return res.status(404).json({
+//     status: 'error',
+//     code: 404,
+//     message: 'Not found'
 //   })
 // })
+
+router.put('/:contactId', express.json(), updateContact)
 
 module.exports = router
