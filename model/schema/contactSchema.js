@@ -5,15 +5,24 @@ const contactSchema = Schema({
     type: String,
     required: [true, 'Set name for contact'],
     minLength: 2,
-    maxLength: 50,
+    maxLength: 30,
   },
   email: {
     type: String,
+    lowercase: true,
     unique: true,
+    required: 'Email address is required',
+    match: [
+        // eslint-disable-next-line no-useless-escape
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        'Please fill a valid email address',
+      ],
   },
   phone: {
     type: String,
     unique: true,
+    required: 'Number phone is required',
+    match: /^[0-9]+$/,
   },
   favorite: {
     type: Boolean,

@@ -46,12 +46,9 @@ mongoose.connect(DB_HOST, {
   console.log('Database connection successful')
   app.listen(PORT)
 })
-  .catch(error => console.log(`Error in Database connection: ${error.message}`))
-
-// // app.use(express.json())
-
-// app.use((err, req, res, next) => {
-//   res.status(500).json({ message: err.message })
-// })
+  .catch(error => {
+    console.log(`Error in Database connection: ${error.message}`)
+    process.exit(1)
+  })
 
 module.exports = app;
