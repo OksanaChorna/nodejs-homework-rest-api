@@ -1,67 +1,57 @@
-const express = require('express')
-// const logger = require('morgan')
-const cors = require('cors')
+const express = require('express');
+const logger = require('morgan');
+const cors = require('cors');
+const mongoose = require('mongoose');
 
-const contactsRouter = require('./routes/api/contacts')
+require('dotenv').config();
 
-const app = express()
+const contactsRouter = require('./routes/api/contacts');
 
-const mongoose = require('mongoose')
+const app = express();
 
-require('dotenv').config()
-// const { Schema, model } = require('mongoose')
+app.use(cors());
 
-app.use(cors())
+const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
-app.use('/api/contacts', contactsRouter)
+app.use(logger(formatsLogger));
 
+app.use('/api/contacts', contactsRouter);
+
+app.use((_, res) => {
+  res.status(404).json({
+    status: 'error',
+    code: 404,
+    message: 'Not found'
+  })
+});
+
+app.use((error, _, res, __) => {
+  const { code = 500, message = 'Server error' } = error
+  res.status(code).json({
+    status: 'fail',
+    code,
+    message
+  })
+}
+);
 
 const { DB_HOST, PORT = 3000 } = process.env
 
-// const userSchema = Schema({
-//   name: String,
-//   age: Number
-// })
-
-// const Woman = model('woman', userSchema)
-
 mongoose.connect(DB_HOST, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
 }).then(() => {
+  console.log('Database connection successful')
   app.listen(PORT)
 })
-  .catch(error => console.log(error))
+  .catch(error => console.log(`Error in Database connection: ${error.message}`))
 
-
-// then(() => {
-//   const newUser = {
-//     name: 'Snake',
-//     age: 1
-//   }
-//   User.create(newUser, (error, data) => {
-//     if (error) {
-//       console.log(error)
-//       return
-//     }
-//     console.log(data)
-//   })
-// }).catch(error => console.log(error))
-// console.log('Database connection successful')
-
-
-// const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
-
-// app.use(logger(formatsLogger))
 // // app.use(express.json())
-
-
-// app.use((req, res) => {
-//   res.status(404).json({ message: 'Not found' })
-// })
 
 // app.use((err, req, res, next) => {
 //   res.status(500).json({ message: err.message })
 // })
 
-module.exports = app
+module.exports = app;
