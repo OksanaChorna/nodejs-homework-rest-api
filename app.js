@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const contactsRouter = require('./routes/api/contacts');
+const usersRouter = require('./routes/api/users')
 
 const app = express();
 
@@ -16,6 +17,7 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 app.use(logger(formatsLogger));
 
 app.use('/api/contacts', contactsRouter);
+app.use('/api/users', usersRouter);
 
 app.use((_, res) => {
   res.status(404).json({
@@ -35,7 +37,7 @@ app.use((error, _, res, __) => {
 }
 );
 
-const { DB_HOST, PORT = 3000 } = process.env
+const { DB_HOST, PORT } = process.env
 
 mongoose.connect(DB_HOST, {
   useNewUrlParser: true,

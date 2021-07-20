@@ -2,7 +2,7 @@ const { contact: service } = require('../../services')
 const { contactSchema,
     // updateContactValidate,
     // updateContactStatusValidate
-} = require('../../routes/api/validate')
+} = require('../../routes/validate')
 
 const add = async (req, res, next) => {
     const { error } = contactSchema.validate(req.body)
