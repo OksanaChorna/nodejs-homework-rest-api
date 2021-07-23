@@ -14,4 +14,8 @@ const getAll = () => {
   return User.find({});
 };
 
-module.exports = { getOne, add, getAll };
+const getCurrent = id => {
+  return User.findById(id);
+};
+
+module.exports = { getOne, add, getAll, getCurrent };

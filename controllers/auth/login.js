@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 const { user: service } = require("../../services");
 
 const login = async (req, res, next) => {
@@ -12,7 +15,9 @@ const login = async (req, res, next) => {
       });
       return;
     }
-    const token = "09843uyhgrbhgert.039248uirhjfnmdfhdjfh.9283476346rfgh";
+    const { SECRET_KEY } = process.env;
+    const payload = { id: user._id };
+    const token = jwt.sign(payload, SECRET_KEY);
     res.status(200).json({
       status: "success",
       code: 200,
