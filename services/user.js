@@ -18,4 +18,8 @@ const getCurrent = id => {
   return User.findById(id);
 };
 
-module.exports = { getOne, add, getAll, getCurrent };
+const updateById = (id, updInfo) => {
+  return User.findByIdAndUpdate(id, updInfo);
+};
+
+module.exports = { add, getOne, getAll, getCurrent, updateById };

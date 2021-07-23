@@ -1,7 +1,17 @@
 const { user: service } = require("../../services");
+const { schemaSignupUser } = require("../../routes/validate");
 
 const signup = async (req, res, next) => {
   const { email, password } = req.body;
+  const { error } = schemaSignupUser.validate(req.body);
+  if (error) {
+    res.status(404).json({
+      status: error,
+      code: 400,
+      message: "missing required name field",
+    });
+    return;
+  }
   try {
     const result = await service.getOne({ email });
     if (result) {
@@ -17,6 +27,12 @@ const signup = async (req, res, next) => {
       status: "success",
       code: 201,
       message: "Success",
+      data: {
+        user: {
+          email: email,
+          subscription: newUser.subscription,
+        },
+      },
     });
   } catch (error) {
     next(error);

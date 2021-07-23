@@ -2,7 +2,7 @@ const passport = require("passport");
 
 const authenticate = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (error, user) => {
-    if (error || !user) {
+    if (error || !user || !user.token) {
       res.status(401).json({
         status: "Unauthorized",
         code: 401,

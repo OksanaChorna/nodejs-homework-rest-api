@@ -1,3 +1,4 @@
+const { token } = require("morgan");
 const passport = require("passport");
 const { ExtractJwt, Strategy } = require("passport-jwt");
 require("dotenv").config();
