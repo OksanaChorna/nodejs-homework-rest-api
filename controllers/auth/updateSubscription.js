@@ -11,20 +11,24 @@ const updateSubscription = async (req, res, next) => {
     });
     return;
   }
-  const { id } = req.params;
-  console.log(id);
-  const { subscription = starter } = req.body;
-  console.log(subscription);
+
   try {
-    const result = await service.updateSubscription(id, { subscription });
-    console.log(result);
-    res.json({
-      status: "success",
-      code: 200,
-      data: {
-        result,
-      },
-    });
+    // const id = req.user.id;
+    //    const { subscription = starter } = req.body;
+    //    console.log(subscription);
+    if (req.body) {
+      const user = await service.updateSubscription(req.user._id, req.body);
+      const { email, subscription } = user;
+    }
+    if (user) {
+      return res.status(200).consolejson({
+        status: "success",
+        code: 200,
+        data: { email, subscription },
+      });
+      // eslint-disable-next-line no-unreachable
+      return res.json({ status: "error", code: 404, message: "Not found" });
+    }
   } catch (error) {
     next(error);
   }
