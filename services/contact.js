@@ -2,23 +2,15 @@ const { Contact } = require("../model");
 
 const getAll = async query => {
   // return Contact.find({})
-  console.log(query);
-  //   const dbQuery = { favorite: "true" };
-
-  //   if (query.favorite !== undefined) {
-  //     dbQuery = { favorite: query.favorite === "true" };
-  //     console.log(dbQuery);
-  //   }
 
   const options = {
     page: query.page,
     limit: query.limit,
   };
   try {
-    const resultPaginate = await Contact.paginate(
-      { favorite: true },
-      options,
-    ).then(function (result) {
+    const resultPaginate = await Contact.paginate({}, options).then(function (
+      result,
+    ) {
       return result.docs;
     });
     return resultPaginate;
