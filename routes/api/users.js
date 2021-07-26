@@ -15,6 +15,6 @@ router.post("/login", loginUserValidation, express.json(), ctrl.login);
 router.get("/current", authenticate, ctrl.getCurrent);
 router.post("/logout", authenticate, ctrl.logout);
 
-router.patch("/subscription", express.json(), ctrl.updateSubscription);
+router.patch("/:id", express.json(), ctrl.updateSubscription);
 
 module.exports = router;

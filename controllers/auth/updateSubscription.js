@@ -13,18 +13,14 @@ const updateSubscription = async (req, res, next) => {
   }
 
   try {
-    // const id = req.user.id;
-    //    const { subscription = starter } = req.body;
-    //    console.log(subscription);
-    if (req.body) {
-      const user = await service.updateSubscription(req.user._id, req.body);
-      const { email, subscription } = user;
-    }
+    const user = await service.updateById(req.params.id, req.body);
+
+    const { id, subscription } = user;
     if (user) {
-      return res.status(200).consolejson({
+      return res.status(200).json({
         status: "success",
         code: 200,
-        data: { email, subscription },
+        data: { id, subscription },
       });
       // eslint-disable-next-line no-unreachable
       return res.json({ status: "error", code: 404, message: "Not found" });
