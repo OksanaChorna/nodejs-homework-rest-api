@@ -11,6 +11,11 @@ const userSchema = Schema(
       type: String,
       required: [true, "Email is required"],
       unique: true,
+      match: [
+        // eslint-disable-next-line no-useless-escape
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please fill a valid email address",
+      ],
     },
     subscription: {
       type: String,
