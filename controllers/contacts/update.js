@@ -1,6 +1,6 @@
 // const { schemaUpdate } = require('../../routes/api/validate')
 const { contact: service } = require("../../services");
-const { schemaUpdate} = require('../../routes/api/validate')
+const { schemaUpdate} = require('../../routes/validate')
 
 const update = async (req, res, next) => {
     const { error } = schemaUpdate.validate(req.body)
