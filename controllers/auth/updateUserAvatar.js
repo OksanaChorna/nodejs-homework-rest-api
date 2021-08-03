@@ -1,24 +1,22 @@
 const { user: service } = require("../../services");
-// const shortid = require("shortid");
 const jimp = require("jimp");
 const fs = require("fs/promises");
 const path = require("path");
 
 const updateUserAvatar = async (req, res, next) => {
-  const publicDir = path.join(process.cwd(), "public", "avatars");
-  console.log(publicDir, "publicdir");
-
+  const publicDir = path.join("public", "avatars");
+  const tmpDir = path.join(process.cwd(), "tmp");
   const { path: tempName, originalname } = req.file;
-  console.log(path, "path upd");
-  console.log(originalname, "name upd");
-  console.log(req.params.id);
-  try {
-    // const useDirectory = path.join(publicDir, req.params.id);
-    // // const useDirectory = path.join(publicDir, originalname);
 
-    // await fs.mkdir(useDirectory);
-    // const fileName = path.join(useDirectory, originalname);
-    const fileName = path.join(publicDir, originalname);
+  try {
+    const tmpDirectory = path.join(tmpDir, req.user.id);
+
+    await fs.mkdir(tmpDirectory);
+    const tmpFileName = path.join(tmpDirectory, originalname);
+    const publicFileName = path.join(
+      publicDir,
+      req.user.id + "-" + originalname,
+    );
     const img = await jimp.read(tempName);
     await img
       .autocrop()
@@ -27,19 +25,19 @@ const updateUserAvatar = async (req, res, next) => {
         250,
         jimp.HORIZONTAL_ALIGN_CENTER || jimp.VERTICAL_ALIGN_MIDDLE,
       )
-      .writeAsync(tempName);
-    fs.rename(tempName, fileName);
-    const avatarURL = await service.updateAvatar(req.params.id, tempName);
-    // const userId = user.id;
-    console.log(req.params.id);
+      .writeAsync(tmpFileName);
+    fs.rename(tmpFileName, path.join(process.cwd(), publicFileName));
 
-    // const { id } = user;
+    const avatarURL = await service.updateAvatar(
+      req.user.id,
+      "/avatars/" + req.user.id + "-" + originalname,
+    );
     if (avatarURL) {
       return res.status(200).json({
         status: "success",
         code: 200,
         data: {
-          avatarURL: avatarURL,
+          avatarURL: avatarURL.avatarURL,
         },
       });
       // eslint-disable-next-line no-unreachable

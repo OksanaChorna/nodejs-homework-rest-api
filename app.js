@@ -26,28 +26,7 @@ app.use(logger(formatsLogger));
 // const publicDir = path.join(process.cwd(), "public", "avatars");
 // console.log(publicDir);
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, tmpDir);
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, file.originalname);
-//   },
-//   limits: {
-//     fileSize: 1048576,
-//   },
-//   fileFilter: (req, file, cb) => {
-//     if (file.mimetype.includes("image")) {
-//       cb(null, true);
-//       return;
-//     }
-//     cb(null, false);
-//   },
-// });
-
 app.use(express.static(path.join(process.cwd(), "public")));
-
-// const uploadMiddleware = multer({ storage });
 
 // app.post(
 //   "/register",
