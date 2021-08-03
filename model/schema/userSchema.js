@@ -1,5 +1,6 @@
 const { Schema } = require("mongoose");
 const bcrypt = require("bcryptjs");
+const gravatar = require("gravatar");
 
 const userSchema = Schema(
   {
@@ -11,6 +12,11 @@ const userSchema = Schema(
       type: String,
       required: [true, "Email is required"],
       unique: true,
+      match: [
+        // eslint-disable-next-line no-useless-escape
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please fill a valid email address",
+      ],
     },
     subscription: {
       type: String,
@@ -20,6 +26,12 @@ const userSchema = Schema(
     token: {
       type: String,
       default: null,
+    },
+    avatarURL: {
+      type: String,
+      default: function () {
+        return gravatar.url(this.email, { s: "250" }, true);
+      },
     },
   },
   { versionKey: false, timestamps: true },

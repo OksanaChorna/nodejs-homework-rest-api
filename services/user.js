@@ -22,4 +22,8 @@ const updateById = (id, body) => {
   return User.findByIdAndUpdate(id, { ...body }, { new: true });
 };
 
-module.exports = { add, getOne, getAll, getCurrent, updateById };
+const updateAvatar = (id, avatarURL) => {
+  return User.findByIdAndUpdate(id, { avatarURL });
+};
+
+module.exports = { add, getOne, getAll, getCurrent, updateById, updateAvatar };
