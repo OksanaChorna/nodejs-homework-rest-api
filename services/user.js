@@ -5,7 +5,7 @@ const getOne = filter => {
 };
 
 const add = ({ password, ...other }) => {
-  // other - email, verificationToken
+  // other - email, verifyToken
   const newUser = new User(other);
   newUser.setPassword(password);
   return newUser.save();

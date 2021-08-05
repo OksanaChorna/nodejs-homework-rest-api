@@ -8,8 +8,8 @@ const repeatEmailVerify = async (req, res, next) => {
     if (user) {
       const { verify, verifyToken, email } = user;
       if (!verify) {
-        //   const verificationToken = shortid.generate();
-        //   const newUser = await service.add({ email, password, verificationToken });
+        //   const verifyToken = shortid.generate();
+        //   const newUser = await service.add({ email, password, verifyToken });
         const emailToUser = {
           to: email,
           subject: "Подтвердите свой email",

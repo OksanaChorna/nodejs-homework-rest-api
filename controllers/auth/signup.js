@@ -25,12 +25,12 @@ const signup = async (req, res, next) => {
       });
       return;
     }
-    const verificationToken = shortid.generate();
-    const newUser = await service.add({ email, password, verificationToken });
+    const verifyToken = shortid.generate();
+    const newUser = await service.add({ email, password, verifyToken });
     const emailToUser = {
       to: email,
       subject: "Подтвердите свой email",
-      text: `<a href="http://localhost:3000/api/users/verify/${verificationToken}>Нажмите для подтверждения email</a>"`,
+      text: `<a href="http://localhost:3000/api/users/verify/${verifyToken}>Нажмите для подтверждения email</a>"`,
     };
     sendMail(emailToUser);
     res.status(201).json({

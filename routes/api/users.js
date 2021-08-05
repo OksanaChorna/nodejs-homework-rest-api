@@ -16,7 +16,7 @@ router.patch(
   ctrl.updateUserAvatar,
 );
 router.patch("/:id", express.json(), ctrl.updateSubscription);
-router.get("/users/verify/:verificationToken", ctrl.verify);
+router.get("/users/verify/:verifyToken", ctrl.verify);
 router.post("/verify", ctrl.repeatEmailVerify);
 
 module.exports = router;
