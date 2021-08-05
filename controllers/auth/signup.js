@@ -1,5 +1,8 @@
 const { user: service } = require("../../services");
 const { schemaSignupUser } = require("../../routes/validate");
+const shortid = require("shortid");
+
+const sendMail = require("../../utils");
 
 const signup = async (req, res, next) => {
   const { email, password } = req.body;
@@ -22,7 +25,14 @@ const signup = async (req, res, next) => {
       });
       return;
     }
-    const newUser = await service.add({ email, password });
+    const verificationToken = shortid.generate();
+    const newUser = await service.add({ email, password, verificationToken });
+    const emailToUser = {
+      to: email,
+      subject: "Подтвердите свой email",
+      text: `<a href="http://localhost:3000/api/users/verify/${verificationToken}>Нажмите для подтверждения email</a>"`,
+    };
+    sendMail(emailToUser);
     res.status(201).json({
       status: "success",
       code: 201,
