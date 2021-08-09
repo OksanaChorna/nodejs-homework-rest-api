@@ -1,12 +1,9 @@
 const { user: service } = require("../../services");
 
 const verify = async (req, res, next) => {
-  console.log(req.params);
   const { verifyToken } = req.params;
-  console.log(verifyToken);
   try {
-    const user = await service.getOne(verifyToken);
-    console.log(user);
+    const user = await service.getOne({ verifyToken });
     if (!user) {
       res.status(404).json({
         status: "error",
