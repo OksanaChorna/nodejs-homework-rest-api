@@ -4,8 +4,9 @@ const getOne = filter => {
   return User.findOne(filter);
 };
 
-const add = ({ email, password }) => {
-  const newUser = new User({ email });
+const add = ({ password, ...other }) => {
+  // other - email, verifyToken
+  const newUser = new User(other);
   newUser.setPassword(password);
   return newUser.save();
 };

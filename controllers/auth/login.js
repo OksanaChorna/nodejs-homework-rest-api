@@ -17,7 +17,7 @@ const login = async (req, res, next) => {
   }
   try {
     const user = await service.getOne({ email });
-    if (!user || !user.comparePassword(password)) {
+    if (!user || !user.comparePassword(password) || !user.verify) {
       res.status(401).json({
         status: "Unauthorized",
         code: 401,
